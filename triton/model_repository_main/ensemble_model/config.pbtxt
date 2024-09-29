@@ -1,0 +1,84 @@
+name: "ensemble_model"
+platform: "ensemble"
+max_batch_size: 0 # change
+input [
+  {
+    name: "video_bytes"
+    data_type: TYPE_STRING
+    dims: [1]
+  }
+]
+output [
+  {
+    name: "classifier_output"
+    data_type: TYPE_FP32
+    dims: [1000]
+  },
+  {
+    name: "audio_output"
+    data_type: TYPE_FP32
+    dims: [768]
+  },
+  {
+    name: "video_output"
+    data_type: TYPE_FP32
+    dims: [768]
+  }
+]
+
+ensemble_scheduling {
+  step [
+    {
+      model_name: "video_audio_splitter"
+      model_version: -1
+      input_map {
+        key: "video_bytes"
+        value: "video_bytes"
+      }
+      output_map {
+        key: "video_features"
+        value: "video_features"
+      },
+      output_map {
+        key: "audio_frames"
+        value: "audio_frames"
+      }
+    },
+    {
+      model_name: "audio_embedding"
+      model_version: -1
+      input_map {
+        key: "audio_input"
+        value: "audio_frames"
+      }
+      output_map {
+        key: "audio_output"
+        value: "audio_output"
+      }
+    },
+    {
+      model_name: "video_embedding"
+      model_version: -1
+      input_map {
+        key: "video_input"
+        value: "video_features"
+      }
+      output_map {
+        key: "video_output"
+        value: "video_output"
+      }
+    },
+    {
+      model_name: "classifier"
+      model_version: -1
+      input_map {
+        key: "classifier_input"
+        value: "video_output"
+      }
+      output_map {
+        key: "classifier_output"
+        value: "classifier_output"
+      }
+    }
+  ]
+}

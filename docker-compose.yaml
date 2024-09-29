@@ -1,0 +1,35 @@
+services:
+  triton:
+    build:
+      context: ${PWD}/triton
+    image: triton_server:v0
+    shm_size: 1gb
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - ${PWD}/triton:/workspace/
+      - ${PWD}/triton/model_repository_main:/models
+    command: tritonserver --model-repository=/models
+    networks:
+      - my_network
+
+  fastapi:
+    build:
+      context: ${PWD}/api
+    image: fastapi_service:v0
+    ports:
+      - "8080:8080"
+    networks:
+      - my_network
+    depends_on:
+      - triton
+    environment:
+      - GRPC_SERVER=triton:8001
+    volumes:
+      - ${PWD}/api:/temp/
+
+networks:
+  my_network:
+    driver: bridge
