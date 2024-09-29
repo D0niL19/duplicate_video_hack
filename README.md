@@ -8,7 +8,7 @@
 - Hugging Face — для моделей машинного обучения.
 - ONNX — для оптимизации и переноса моделей.
 - Pytorch — для работы с нейронными сетями и обучением моделей.
-- Triton — для высокопроизводительного сервинга моделей.
+- Triton — для высокопроизводительного инференса моделей.
 - FAISS — для быстрого поиска по векторным представлениям.
 - FastAPI — для создания API сервиса.
 
@@ -23,7 +23,9 @@
 
 ## Метрики
 
-- Точность определения дубликатов: 80%
+Обработка на CPU:
+
+- F1-мера - 0.8
 - Среднее время обработки видео: 1100 мс на видеофайл
 
 [//]: # (- Пропускная способность сервиса: до 1000 видеофайлов в минуту)
@@ -35,42 +37,26 @@
 1. Загрузка Docker-образов
 
    Перед запуском необходимо загрузить нужные Docker-образы для Triton и моделей машинного обучения:
-   
-      docker pull <your-custom-image>  # Замените на нужный образ
-   
+```
+docker pull nvcr.io/nvidia/tritonserver:24.08-py3
+```
 
 2. Запуск с Docker Compose
 
-   Настройте и запустите сервисы с помощью Docker Compose. Пример файла docker-compose.yml:
+   Настройте и запустите сервисы с помощью Docker Compose из корня проекта.
 ```
-version: '3.8'
-   services:
-     api:
-       image: <your-api-image>
-       ports:
-         - "8000:8000"
-       environment:
-         - TRITON_SERVER_URL=triton:8001
-     triton:
-       image: <your-triton-image>
-       ports:
-         - "8001:8001"
+docker compose up --build
 ```
 
-3. Запуск проекта
-
-   После настройки Docker Compose, запустите проект командой:
-
-      docker-compose up
    
 
 ### Пример запроса к API
 
-После запуска сервис будет доступен на http://localhost:8000. Пример запроса на определение дубликата видео:
+После запуска сервис будет доступен на 89.169.154.167:8080. Пример запроса на определение дубликата видео:
 
 curl -X POST "89.169.154.167:8080/check-video-duplicate" \
 -H "Content-Type: application/json" \
--d '{"video_url": "https://s3.ritm.media/yappy-db-duplicates/video_id.mp4}'
+-d '{"url": "https://s3.ritm.media/yappy-db-duplicates/video_id.mp4}'
 
 Ответ будет содержать результат сравнения видео с уже существующими в базе данных.
 \
@@ -90,5 +76,4 @@ curl -X POST "89.169.154.167:8080/check-video-duplicate" \
 ## Контакты
 
 Если у вас возникли вопросы или предложения, вы можете связаться с нами по следующим контактам:
-- Telegram: [@D0niL19](https://t.me/D0niL19)  [@Wortex04](https://t.me/Wortex04) [@AzamatSibgatullin]((https://t.me/AzamatSibgatullin))
-]
+- Telegram: [@D0niL19](https://t.me/D0niL19) [@Wortex04](https://t.me/Wortex04) [@AzamatSibgatullin](https://t.me/AzamatSibgatullin)
