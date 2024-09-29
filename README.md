@@ -44,10 +44,14 @@ docker pull nvcr.io/nvidia/tritonserver:24.08-py3
 2. Загрузить веса моделей
 
 ```commandline
-mkdir -p $(dirname "triton/model_repository_main/audio_embedding/1") && wget -O "triton/model_repository_main/audio_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/model.onnx
+mkdir -p triton/model_repository_main/audio_embedding/1 && wget -O "triton/model_repository_main/audio_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/model.onnx
 ```
 ```commandline
-mkdir -p $(dirname "triton/model_repository_main/video_embedding/1") && wget -O "triton/model_repository_main/video_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/video.onnx
+mkdir -p triton/model_repository_main/video_embedding/1 && wget -O "triton/model_repository_main/video_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/video.onnx
+```
+
+```commandline
+mkdir -p triton/model_repository_main/ensemble_model/1
 ```
 
 3. Запуск с Docker Compose
