@@ -25,7 +25,7 @@
 
 Обработка на CPU:
 
-- F1-мера - 0.8
+- F1-мера - 0.82
 - Среднее время обработки видео: 1100 мс на видеофайл
 
 [//]: # (- Пропускная способность сервиса: до 1000 видеофайлов в минуту)
@@ -41,7 +41,16 @@
 docker pull nvcr.io/nvidia/tritonserver:24.08-py3
 ```
 
-2. Запуск с Docker Compose
+2. Загрузить веса моделей
+
+```commandline
+mkdir -p $(dirname "triton/model_repository_main/audio_embedding/1") && wget -O "triton/model_repository_main/audio_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/model.onnx
+```
+```commandline
+mkdir -p $(dirname "triton/model_repository_main/video_embedding/1") && wget -O "triton/model_repository_main/video_embedding/1/model.onnx" https://storage.yandexcloud.net/weights/video.onnx
+```
+
+3. Запуск с Docker Compose
 
    Настройте и запустите сервисы с помощью Docker Compose из корня проекта.
 ```

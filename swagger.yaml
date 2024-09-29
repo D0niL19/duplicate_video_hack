@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: Video Duplicate Checker API
+  version: 1.0.0
+  description: API для проверки дубликатов видео
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /check-video-duplicate:
+    post:
+      summary: Check if a video is a duplicate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoLinkRequest'
+      responses:
+        '200':
+          description: Video duplicate check result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoLinkResponse'
+        '400':
+          description: Invalid video URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error during inference
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /process-videos-from-csv/:
+    post:
+      summary: Process videos from CSV file
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_path:
+                  type: string
+                  description: Path to the CSV file containing video links
+                  example: /path/to/video_links.csv
+      responses:
+        '200':
+          description: Videos processed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Videos processed successfully and results saved to submission.csv.
+        '400':
+          description: Error reading CSV file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error processing video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    VideoLinkRequest:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL of the video to check for duplicates
+          example: https://example.com/video.mp4
+
+    VideoLinkResponse:
+      type: object
+      properties:
+        is_duplicate:
+          type: boolean
+          description: Indicates if the video is a duplicate
+        duplicate_for:
+          type: string
+          description: UUID of the video it is a duplicate of
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
